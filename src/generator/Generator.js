@@ -46,12 +46,19 @@ Lifecycle:
 5. stop() halts generator
 */
 
-// ===============================
-// LAYER 1B — Generator Constructor
-// ===============================
+
 
 class Generator {
     constructor(config = {}) {
+
+        // ===============================
+        // LAYER 1E — Config Validation
+        // ===============================
+
+        if (config == null || typeof config !== 'object') {
+            throw new Error('Generator config must be an object.')
+        }
+
         // 1. Destructure config with defaults
         const {
             resourceType = "unknown",
@@ -59,6 +66,26 @@ class Generator {
             delay = 1000,
             limit = Infinity,
         } = config;
+
+        if (typeof resourceType !== 'string') {
+            throw new Error('Generator config: "resourceType" must be a string.')
+        }
+
+        if (!Number.isFinite(productionRate) || productionRate <= 0) {
+            throw new Error('Generator config: "productionRate" must be a positive number')
+        }
+
+        if (!Number.isFinite(delay) || delay <= 0) {
+            throw new Error('Generator config: "delay" must be a positive number (ms).')
+        }
+
+        if (!Number.isFinite(limit) || limit <= 0) {
+            throw new Error('Generator config: "limit" must be a positive number (or Infinity).')
+        }
+
+        // ===============================
+        // LAYER 1B — Generator Constructor
+        // ===============================
 
         // 2. Internal State 
         this.resourceType = resourceType;
@@ -81,7 +108,7 @@ class Generator {
     // LAYER 1C — Start/Stop & Scheduler
     // ===============================
 
-    startTransition() {
+    start() {
         if (this.isRunning) return; //already running
         this.isRunning = true;
         this._scheduleNextTick();
@@ -116,10 +143,10 @@ class Generator {
 
     _tick() {
         // Increase the resource count by the base amount
-        this.currentAmount += this.baseAmount;
+        this.count += this.productionRate;
 
         console.log(
-            `Generator ${this.resourceType} produced ${this.baseAmount}. Total: ${this.currentAmount}`
+            `Generator ${this.resourceType} produced ${this.productionRate}. Total: ${this.count}`
         );
     }
 
