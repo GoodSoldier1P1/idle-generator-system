@@ -104,13 +104,25 @@ class Generator {
         if (!this.isRunning) return;
 
         this.timerId = setTimeout(() => {
-            // Tick logic will be added in Layer 1D
-            console.log(`Tick for ${this.resourceType}`);
-
-            // Schedule the next tick
-            this._scheduleNextTick();
+            this._tick(); // Actual production happens here
+            this._scheduleNextTick(); // Schedule the next tick
         }, this.delay);
     }
+
+
+    // ===============================
+    // LAYER 1D — Tick Logic (Resource Production)
+    // ===============================
+
+    _tick() {
+        // Increase the resource count by the base amount
+        this.currentAmount += this.baseAmount;
+
+        console.log(
+            `Generator ${this.resourceType} produced ${this.baseAmount}. Total: ${this.currentAmount}`
+        );
+    }
+
 }
 
 // Temporary export (we'll refine later)
