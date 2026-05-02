@@ -76,5 +76,44 @@ class Generator {
     }
 }
 
+
+
+
+// ===============================
+// LAYER 1C — Start/Stop & Scheduler
+// ===============================
+
+startTransition() {
+    if (this.isRunning) return; //already running
+    this.isRunning = true;
+    this._scheduleNextTick();
+    console.log(`Generator ${this.resourceType} started`);
+}
+
+stop() {
+    if (!this.isRunning) return; // already stopped
+    this.isRunning = false;
+
+    if (this.timerId !== null) {
+        clearTimeout(this.timerId);
+        this.timerId = null;
+    }
+
+    console.log(`Generator ${this.resourceType} stopped`)
+}
+
+_scheduleNextTick() {
+    if (!this.isRunning) return;
+
+    this.timerId = setTimeout(() => {
+        // Tick logic will be added in Layer 1D
+        console.log(`Tick for ${this.resourceType}`);
+
+        // Schedule the next tick
+        this._scheduleNextTick();
+    }, this.delay);
+}
+
+
 // Temporary export (we'll refine later)
 module.exports = Generator;
